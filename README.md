@@ -39,9 +39,8 @@ This project consolidates best practices, scripts, and configuration profiles to
 - `norton_compatible_hardening.ps1` — Hardening script compatible with Norton 360 or other AVs that suppress Defender  
 - `create_restore_point.ps1` — Creates a Windows restore point before applying changes
 
-### Run the Scripts
+### Run the Scripts with PowerShell
 
-powershell
 ```
 cd $env:USERPROFILE\Downloads
 powershell -ExecutionPolicy Bypass -File .\defender_hardening.ps1
