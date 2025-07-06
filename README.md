@@ -43,7 +43,9 @@ This project consolidates best practices, scripts, and configuration profiles to
 
 ```
 cd $env:USERPROFILE\Downloads
+powershell -ExecutionPolicy Bypass -File .\create_restore_point.ps1`
 powershell -ExecutionPolicy Bypass -File .\defender_hardening.ps1
+powershell -ExecutionPolicy Bypass -File .\norton_compatible_hardening.ps1
 ```
 
 ---
