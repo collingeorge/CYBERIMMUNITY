@@ -10,6 +10,7 @@ A personal cybersecurity hardening project designed to build an “immune system
 - [Windows 11 Enterprise Hardening](#windows-11-enterprise-hardening)  
 - [iOS 18.5 Security & Privacy](#ios-185-security--privacy)  
 - [Network & DNS Hardening](#network--dns-hardening)  
+- [Scheduled Integrity & DNSSEC Monitoring](#scheduled-integrity--dnssec-monitoring)  
 - [ProtonVPN vs Apple Private Relay](#protonvpn-vs-apple-private-relay)  
 - [Checklist Summaries](#checklist-summaries)  
 - [Usage & Installation](#usage--installation)  
@@ -27,17 +28,21 @@ This project consolidates best practices, scripts, and configuration profiles to
 
 ### Key Features
 
-- Disables legacy and insecure protocols (SMBv1, Remote Desktop)
-- Enforces SmartScreen and Exploit Protection
-- Limits telemetry and data collection
-- Compatible with third-party antivirus solutions (e.g., Norton 360)
-- Includes PowerShell scripts for automation
+- Disables legacy and insecure protocols (SMBv1, Remote Desktop)  
+- Enforces SmartScreen and Exploit Protection  
+- Limits telemetry and data collection  
+- Compatible with third-party antivirus solutions (e.g., Norton 360)  
+- Includes PowerShell scripts for automation  
+- Automated scheduled tasks for continuous integrity monitoring  
 
 ### Included Scripts
 
 - `defender_hardening.ps1` — Full hardening script (for systems using Defender)  
 - `norton_compatible_hardening.ps1` — Hardening script compatible with Norton 360 or other AVs that suppress Defender  
-- `create_restore_point.ps1` — Creates a Windows restore point before applying changes
+- `create_restore_point.ps1` — Creates a Windows restore point before applying changes  
+- `check_root_certs.ps1` — Checks for unexpected changes in trusted Root CA store  
+- `check_dns_integrity.ps1` — Monitors DNS resolution consistency  
+- `check_dnssec.ps1` — Validates DNSSEC support on configured DNS servers  
 
 ### Run the Scripts with PowerShell
 
@@ -46,7 +51,18 @@ cd $env:USERPROFILE\Downloads
 powershell -ExecutionPolicy Bypass -File .\create_restore_point.ps1
 powershell -ExecutionPolicy Bypass -File .\defender_hardening.ps1
 powershell -ExecutionPolicy Bypass -File .\norton_compatible_hardening.ps1
+powershell -ExecutionPolicy Bypass -File .\check_root_certs.ps1
+powershell -ExecutionPolicy Bypass -File .\check_dns_integrity.ps1
+powershell -ExecutionPolicy Bypass -File .\check_dnssec.ps1
 ```
+
+### Scheduled Tasks
+
+Automated scheduled tasks run weekly to:
+
+- Validate Root CA certificate store integrity  
+- Monitor DNS resolution integrity  
+- Verify DNSSEC validation status  
 
 ---
 
@@ -58,7 +74,7 @@ powershell -ExecutionPolicy Bypass -File .\norton_compatible_hardening.ps1
 - Enforces DNS-over-HTTPS using Quad9 or NextDNS via DNS Override app  
 - Uses ProtonVPN for full-device encrypted network traffic  
 - Manual DNS Proxy profiles cannot be installed without MDM — DNS Override app recommended  
-- Leverages iOS built-in security features like Screen Time and App Tracking Transparency
+- Leverages iOS built-in security features like Screen Time and App Tracking Transparency  
 
 ---
 
@@ -66,14 +82,26 @@ powershell -ExecutionPolicy Bypass -File .\norton_compatible_hardening.ps1
 
 ### Recommended DNS Providers
 
-- **Quad9** — Blocks known malware and phishing domains with a strong privacy policy  
-- **NextDNS** — Highly customizable, with enhanced tracking and malware filtering
+- **Quad9** — Blocks known malware and phishing domains with strong privacy policy  
+- **NextDNS** — Highly customizable, with enhanced tracking and malware filtering  
 
 ### DNS Setup on Devices
 
 - **Windows 11** — Configure Quad9 or NextDNS IPs and enable DNS-over-HTTPS via system settings or PowerShell  
 - **iOS 18.5** — Use DNS Override app to enforce Quad9/NextDNS for Wi-Fi and cellular globally  
-- **VPN** — Use ProtonVPN Duo subscription for full-device encrypted traffic and IP masking
+- **VPN** — Use ProtonVPN Duo subscription for full-device encrypted traffic and IP masking  
+
+---
+
+## Scheduled Integrity & DNSSEC Monitoring
+
+Continuous monitoring of your system’s trustworthiness and DNS security is essential to prevent stealthy man-in-the-middle attacks and DNS spoofing.
+
+- **Root CA Store Integrity** — Weekly verification that no unauthorized certificates have been added or removed from the trusted Root CA store.  
+- **DNS Integrity** — Checks DNS responses over time to detect anomalies or hijacking attempts.  
+- **DNSSEC Validation** — Confirms that your configured DNS servers correctly validate DNSSEC-signed domains, ensuring cryptographic authenticity of DNS data.
+
+Logs from these checks are saved locally for audit and troubleshooting.
 
 ---
 
@@ -88,7 +116,7 @@ powershell -ExecutionPolicy Bypass -File .\norton_compatible_hardening.ps1
 | Compatibility          | iOS/macOS only                 | Multi-platform                   |
 | Subscription Required  | iCloud+                        | ProtonVPN subscription           |
 
-**Recommendation:** Use ProtonVPN as primary VPN for full-device protection. Disable Apple Private Relay when ProtonVPN is active (they cannot run simultaneously).
+**Recommendation:** Use ProtonVPN as your primary VPN for full-device protection. Disable Apple Private Relay when ProtonVPN is active, as they cannot run simultaneously.
 
 ---
 
@@ -105,6 +133,7 @@ powershell -ExecutionPolicy Bypass -File .\norton_compatible_hardening.ps1
 - [ ] Use ProtonVPN for encrypted network traffic  
 - [ ] Regularly update OS and security software  
 - [ ] Optionally, use Norton-compatible hardening if Norton AV installed  
+- [ ] Schedule weekly tasks to check Root CA store, DNS integrity, and DNSSEC  
 
 ---
 
@@ -126,9 +155,10 @@ powershell -ExecutionPolicy Bypass -File .\norton_compatible_hardening.ps1
 1. Download and review the PowerShell hardening scripts.  
 2. Run `create_restore_point.ps1` before making system changes.  
 3. Run the appropriate hardening script depending on your antivirus setup.  
-4. On iOS, install the DNS Override app from the App Store and configure your preferred DNS.  
-5. Subscribe and connect to ProtonVPN for encrypted network protection.  
-6. Follow the checklists regularly for ongoing security hygiene.
+4. Set up scheduled tasks for root cert, DNS integrity, and DNSSEC monitoring.  
+5. On iOS, install the DNS Override app from the App Store and configure your preferred DNS.  
+6. Subscribe and connect to ProtonVPN for encrypted network protection.  
+7. Follow the checklists regularly for ongoing security hygiene.  
 
 ---
 
@@ -145,7 +175,3 @@ For questions or collaboration, reach out via GitHub issues or email.
 ---
 
 # Thank you for securing your digital life with Cyberimmune!
-
----
-
-If you want, I can also help you prepare the actual GitHub repo structure and scripts with README.md, or assist with publishing it. Just say the word!
