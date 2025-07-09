@@ -1,3 +1,4 @@
+
 # Cyber Immune System: Windows Defender Hardening Script
 Set-MpPreference -PUAProtection Enabled
 Set-MpPreference -DisableRealtimeMonitoring $false
