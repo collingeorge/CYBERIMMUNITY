@@ -120,6 +120,14 @@ Logs from these checks are saved locally for audit and troubleshooting.
 
 ---
 
+## Project Phases
+
+- [Phase 1: Core System Hardening (Windows & iOS)](#windows-11-enterprise-hardening)
+- [Phase 2: Advanced Host Hardening & Integrity Enforcement](docs/Phase%202.md) ← 🆕
+- Phase 3: Network Defense & Isolation (Coming Soon)
+
+---
+
 ## Checklist Summaries
 
 ### Windows 11 Enterprise Checklist
