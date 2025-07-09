@@ -1,151 +1,119 @@
-# Cyberimmune: Comprehensive Device Hardening & Privacy Guide
+# Phase 2: Advanced Host Hardening & Integrity Enforcement
 
-A personal cybersecurity hardening project designed to build an “immune system” for your devices — focused on Windows 11 Enterprise and iOS 18.5, integrating network protections, privacy best practices, and app-level security controls.
-
----
-
-## Table of Contents
-
-* [Overview](#overview)
-* [Windows 11 Enterprise Hardening](#windows-11-enterprise-hardening)
-* [iOS 18.5 Security & Privacy](#ios-185-security--privacy)
-* [Network & DNS Hardening](#network--dns-hardening)
-* [ProtonVPN vs Apple Private Relay](#protonvpn-vs-apple-private-relay)
-* [Checklist Summaries](#checklist-summaries)
-* [Usage & Installation](#usage--installation)
-* [License](#license)
+## *Credential Isolation, Logging Enforcement, and Anti-Persistence Measures for Zero Trust Compliance*
 
 ---
 
-## Overview
+## ✪ Abstract
 
-This project consolidates best practices, scripts, and configuration profiles to secure your Windows 11 Enterprise workstation and iOS device from malware, network attacks, and privacy leaks. By combining system hardening, DNS security, and app-level protections with trusted VPN and DNS services, you achieve a layered “cyberimmune” defense.
+Phase 2 of the Cyberimmune project introduces integrity-focused system configurations that go beyond baseline hardening. This phase implements credential isolation through Microsoft’s Credential Guard, enforces PowerShell and script-level auditing, restricts USB-based data exfiltration, and removes known persistence vectors. These measures build upon Phase 1’s foundational system lockdown, elevating the system toward NIST-aligned Zero Trust compliance.
 
 ---
 
-## Windows 11 Enterprise Hardening
+## ✪ Objectives
 
-### Phase 1: Baseline Hardening Scripts (in `phase1/`)
+* Enforce **credential memory isolation** (via Virtualization-Based Security and Credential Guard).
+* Enable **PowerShell and script auditing** for traceable forensic visibility.
+* Disable **removable storage** and persistence-enabling mechanisms.
+* Lay groundwork for forensic baselining and intrusion detection.
 
-* `phase1/defender_hardening.ps1` — Full hardening script (for systems using Defender)
-* `phase1/norton_compatible_hardening.ps1` — Compatible with Norton 360 or other AVs
-* `phase1/create_restore_point.ps1` — Creates a system restore point
+---
 
-### Phase 2: Advanced System Integrity Controls (in `phase2/`)
+## ✪ Step-by-Step Technical Controls
 
-* `phase2/anti_persistence.ps1` — Removes persistence vectors via registry and WSH
-* `phase2/logging_setup.ps1` — Enables PowerShell Module and ScriptBlock logging
-* `phase2/bitlocker_aes256_pin.ps1` — Enables AES-256 BitLocker with preboot PIN (coming)
+### ✅ 2.1: Credential Guard & VBS Enforcement
 
-📄 [Read Phase 2 Documentation](docs/Phase%202.md)
-
-### Run the Scripts with PowerShell
+* **Command Used:**
 
 ```powershell
-cd $env:USERPROFILE\Downloads\Cyberimmune_Bundle_v2
-powershell -ExecutionPolicy Bypass -File .\phase1\create_restore_point.ps1
-powershell -ExecutionPolicy Bypass -File .\phase1\defender_hardening.ps1
-powershell -ExecutionPolicy Bypass -File .\phase2\anti_persistence.ps1
-powershell -ExecutionPolicy Bypass -File .\phase2\logging_setup.ps1
+Get-CimInstance -Namespace "root\Microsoft\Windows\DeviceGuard" -ClassName "Win32_DeviceGuard"
 ```
 
----
+* **Verification Output:**
 
-## iOS 18.5 Security & Privacy
+  * `SecurityServicesRunning: {1}`
+  * `VirtualizationBasedSecurityStatus: 2`
+* **Risk Addressed:** Prevents theft of credentials from LSASS memory.
+* **Compliance References:**
 
-### Key Features
-
-* Requires Face ID/Touch ID for individual app access (long-press app > Protect App)
-* Enforces DNS-over-HTTPS using Quad9 or NextDNS via DNS Override app
-* Uses ProtonVPN for full-device encrypted network traffic
-* Manual DNS Proxy profiles cannot be installed without MDM — DNS Override app recommended
-* Leverages iOS built-in security features like Screen Time and App Tracking Transparency
+  * [NIST SP 800-53 Rev. 5 IA-2(12)](https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final)
+  * [Microsoft Credential Guard Overview](https://learn.microsoft.com/en-us/windows/security/identity-protection/credential-guard/credential-guard)
 
 ---
 
-## Network & DNS Hardening
+### ✅ 2.2: PowerShell Logging Enforcement
 
-### Recommended DNS Providers
+* **Script:** `logging_setup.ps1`
+* **Actions Performed:**
 
-* **Quad9** — Blocks known malware and phishing domains with a strong privacy policy
-* **NextDNS** — Highly customizable, with enhanced tracking and malware filtering
+  * Enables **Module Logging**
+  * Enables **Script Block Logging**
+  * Applies Audit policy changes via `auditpol.exe`
+* **Registry Keys:**
 
-### DNS Setup on Devices
+```reg
+HKLM\Software\Policies\Microsoft\Windows\PowerShell\ModuleLogging
+HKLM\Software\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging
+```
 
-* **Windows 11** — Configure Quad9 or NextDNS IPs and enable DNS-over-HTTPS via system settings or PowerShell
-* **iOS 18.5** — Use DNS Override app to enforce Quad9/NextDNS for Wi-Fi and cellular globally
-* **VPN** — Use ProtonVPN Duo subscription for full-device encrypted traffic and IP masking
-
----
-
-## ProtonVPN vs Apple Private Relay
-
-| Feature               | Apple Private Relay               | ProtonVPN                         |
-| --------------------- | --------------------------------- | --------------------------------- |
-| Scope                 | Safari/web traffic only           | Full device traffic encryption    |
-| Privacy               | Obscures IP from websites & Apple | Masks IP from ISP & network       |
-| Speed                 | Very fast                         | Fast, depends on server load      |
-| Configuration         | Minimal, automatic                | Full control (servers, protocols) |
-| Compatibility         | iOS/macOS only                    | Multi-platform                    |
-| Subscription Required | iCloud+                           | ProtonVPN subscription            |
-
-**Recommendation:** Use ProtonVPN as primary VPN for full-device protection. Disable Apple Private Relay when ProtonVPN is active (they cannot run simultaneously).
+* **Purpose:** Captures all PowerShell-based actions for post-event forensics.
+* **Compliance Reference:** [MITRE ATT\&CK T1059.001 - PowerShell](https://attack.mitre.org/techniques/T1059/001/)
 
 ---
 
-## Checklist Summaries
+### ✅ 2.3: Anti-Persistence Mechanism Removal
 
-### Windows 11 Enterprise Checklist
+* **Script:** `anti_persistence.ps1`
+* **Actions Performed:**
 
-* [x] Create system restore point
-* [x] Disable SMBv1 and Remote Desktop if unused
-* [x] Enable SmartScreen via registry or Defender settings
-* [x] Harden exploit protection (DEP, SEHOP, CFG, etc.)
-* [x] Disable telemetry (set AllowTelemetry=0)
-* [x] Configure DNS to Quad9 or NextDNS (DoH enabled)
-* [x] Use ProtonVPN for encrypted network traffic
-* [x] Regularly update OS and security software
-* [x] Apply Phase 2 scripts for credential and script auditing hardening
-* [x] Optionally use Norton-compatible hardening if Norton AV installed
+  * Disables "Run" keys in registry (HKCU & HKLM)
+  * Disables Windows Script Host
+  * Disables AutoRun for all drives
+* **Purpose:** Prevents lateral persistence techniques often used by malware.
+* **Compliance Reference:** [MITRE ATT\&CK T1547.001 - Registry Run Keys/Startup Folder](https://attack.mitre.org/techniques/T1547/001/)
 
 ---
 
-### iOS 18.5 Checklist
+### ⏳ 2.4: BitLocker AES-256 + PIN at Boot
 
-* [x] Enable Face ID/Touch ID with app-level protection (long-press app > Protect App)
-* [x] Use DNS Override app to enforce Quad9 or NextDNS globally
-* [x] Use ProtonVPN for full-device VPN encryption
-* [x] Disable Auto-Join on untrusted Wi-Fi
-* [x] Disable location, microphone, camera access for unnecessary apps
-* [x] Enable Screen Time restrictions and App Tracking Transparency
-* [x] Keep iOS and apps up to date
-* [x] Use strong passwords and 2FA on Apple ID and apps
+* **Script:** `bitlocker_aes256_pin.ps1`
+* **Function:** Enables AES-256 XTS encryption and prompts user to set boot-time PIN.
+* **Why Important:** Ensures system is unreadable unless authenticated pre-boot.
+* **Compliance Reference:**
 
----
-
-## Usage & Installation
-
-1. Download or clone the project from GitHub.
-2. Run `phase1/create_restore_point.ps1` before making any changes.
-3. Apply Phase 1 scripts depending on Defender/Norton usage.
-4. Run Phase 2 scripts for enhanced security logging and credential isolation.
-5. On iOS, install DNS Override and ProtonVPN from the App Store.
-6. Refer to checklist and maintain regular updates and backups.
+  * [NIST SP 800-111 - Storage Encryption](https://csrc.nist.gov/publications/detail/sp/800-111/final)
+  * [FIPS 140-2 Validated BitLocker](https://learn.microsoft.com/en-us/windows/security/information-protection/bitlocker/bitlocker-overview)
 
 ---
 
-## License
+## ✪ Threat Model Alignment
 
-MIT License — Free to use, modify, and share. Please attribute original work to Collin Blaine George.
+| Threat                     | Control Introduced             | Status     |
+| -------------------------- | ------------------------------ | ---------- |
+| Credential dumping (LSASS) | Credential Guard               | ✅ Active   |
+| Malware persistence        | Run keys disabled, WSH blocked | ✅ Active   |
+| PowerShell abuse           | Module/script logging enforced | ✅ Active   |
+| Cold boot/drive theft      | BitLocker + PIN (pending)      | ⏳ Upcoming |
+
+---
+
+## ✪ Phase 2 Summary Table
+
+| Script                     | Function                          | Verified | Task Scheduled |
+| -------------------------- | --------------------------------- | -------- | -------------- |
+| `anti_persistence.ps1`     | Remove run keys, disable AutoRun  | ✅ Yes    | ✅ Yes          |
+| `logging_setup.ps1`        | Enable PowerShell logging & audit | ✅ Yes    | ✅ Yes          |
+| `bitlocker_aes256_pin.ps1` | Encrypt with AES-256 + PIN        | ⏳ Soon   | ⏳ Planned      |
 
 ---
 
-## Contact
+## ✪ Conclusion
 
-For questions or collaboration, reach out via GitHub issues or email.
-
----
-
-# Thank you for securing your digital life with Cyberimmune!
+Phase 2 completes the foundational Zero Trust posture for Windows 11 by activating credential isolation, forensic-grade logging, and attack surface minimization. These controls reduce the system’s susceptibility to modern threats including ransomware, privilege escalation, and memory-based attacks. Finalizing BitLocker encryption in Phase 2 will ensure full physical disk confidentiality.
 
 ---
+
+## ✪ Next Phase
+
+**Phase 3:** *Network Defense & Isolation (Firewall, DNS Sinkhole, VPN Enforcement)*
+Coming Soon.
