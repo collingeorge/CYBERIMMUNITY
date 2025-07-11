@@ -157,10 +157,10 @@ powershell -ExecutionPolicy Bypass -File .\phase1\create_restore_point.ps1
 powershell -ExecutionPolicy Bypass -File .\phase1\defender_hardening.ps1
 powershell -ExecutionPolicy Bypass -File .\phase2 anti_persistence.ps1
 powershell -ExecutionPolicy Bypass -File .\phase2\bitlocker_aes256_pin.ps1
-powershell -ExecutionPolicy Bypass -File .\phase1\logging_setup.ps1
-powershell -ExecutionPolicy Bypass -File .\registry_hardening.ps1
-powershell -ExecutionPolicy Bypass -File .\check_dns_integrity.ps1
-powershell -ExecutionPolicy Bypass -File .\check_dnssec.ps1
+powershell -ExecutionPolicy Bypass -File .\phase2\logging_setup.ps1
+powershell -ExecutionPolicy Bypass -File .\phase2\registry_hardening.ps1
+powershell -ExecutionPolicy Bypass -File .\monitoring\check_dns_integrity.ps1
+powershell -ExecutionPolicy Bypass -File .\monitoring\check_dnssec.ps1
 powershell -ExecutionPolicy Bypass -File .\monitoring\check_root_certs.ps1
 ```
 
