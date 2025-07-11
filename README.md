@@ -1,151 +1,149 @@
-# Cyberimmune: Comprehensive Device Hardening & Privacy Guide
 
-A personal cybersecurity hardening project designed to build an “immune system” for your devices — focused on Windows 11 Enterprise and iOS 18.5, integrating network protections, privacy best practices, and app-level security controls.
+# 🛡 CYBERIMMUNE: Comprehensive Device Hardening & Privacy Framework
 
----
-
-## Table of Contents
-
-* [Overview](#overview)
-* [Windows 11 Enterprise Hardening](#windows-11-enterprise-hardening)
-* [iOS 18.5 Security & Privacy](#ios-185-security--privacy)
-* [Network & DNS Hardening](#network--dns-hardening)
-* [ProtonVPN vs Apple Private Relay](#protonvpn-vs-apple-private-relay)
-* [Checklist Summaries](#checklist-summaries)
-* [Usage & Installation](#usage--installation)
-* [License](#license)
+A personal cybersecurity hardening project designed to build a “digital immune system” for your devices — focused on Windows 11 Enterprise and iOS 18.5. This project integrates system lockdown scripts, DNS & certificate monitoring, zero trust controls, and privacy enhancements across endpoints.
 
 ---
 
-## Overview
+## 📁 Directory Structure
 
-This project consolidates best practices, scripts, and configuration profiles to secure your Windows 11 Enterprise workstation and iOS device from malware, network attacks, and privacy leaks. By combining system hardening, DNS security, and app-level protections with trusted VPN and DNS services, you achieve a layered “cyberimmune” defense.
-
----
-
-## Windows 11 Enterprise Hardening
-
-### Phase 1: Baseline Hardening Scripts (in `phase1/`)
-
-* `phase1/defender_hardening.ps1` — Full hardening script (for systems using Defender)
-* `phase1/norton_compatible_hardening.ps1` — Compatible with Norton 360 or other AVs
-* `phase1/create_restore_point.ps1` — Creates a system restore point
-
-### Phase 2: Advanced System Integrity Controls (in `phase2/`)
-
-* `phase2/anti_persistence.ps1` — Removes persistence vectors via registry and WSH
-* `phase2/logging_setup.ps1` — Enables PowerShell Module and ScriptBlock logging
-* `phase2/bitlocker_aes256_pin.ps1` — Enables AES-256 BitLocker with preboot PIN (coming)
-
-📄 [Read Phase 2 Documentation](docs/Phase2.md)
-
-### Run the Scripts with PowerShell
-
-```powershell
-cd $env:USERPROFILE\Downloads\Cyberimmune_Bundle_v2
-powershell -ExecutionPolicy Bypass -File .\phase1\create_restore_point.ps1
-powershell -ExecutionPolicy Bypass -File .\phase1\defender_hardening.ps1
-powershell -ExecutionPolicy Bypass -File .\phase2\anti_persistence.ps1
-powershell -ExecutionPolicy Bypass -File .\phase2\logging_setup.ps1
+```text
+CYBERIMMUNITY/
+├── README.md
+├── LICENSE
+├── docs/
+│   ├── Phase1.md
+│   ├── Phase2.md
+│   └── Whitepaper_Draft.md  # (Coming soon)
+├── phase1/
+│   ├── create_restore_point.ps1
+│   ├── defender_hardening.ps1
+│   └── norton_compatible_hardening.ps1
+├── phase2/
+│   ├── anti_persistence.ps1
+│   ├── bitlocker_aes256_pin.ps1
+│   ├── logging_setup.ps1
+│   └── registry_hardening.ps1
+├── monitoring/
+│   ├── check_root_certs.ps1
+│   ├── check_dns_integrity.ps1
+│   ├── check_dnssec.ps1
+│   └── tasks/
+│       ├── DNSSEC_Validation_Monitor.xml
+│       ├── DNS_Resolution_Check.xml
+│       └── RootCertIntegrityMonitor.xml
 ```
 
 ---
 
-## iOS 18.5 Security & Privacy
+## 🔐 Windows 11 Enterprise Hardening
 
-### Key Features
+### Phase 1 (Baseline Hardening)
 
-* Requires Face ID/Touch ID for individual app access (long-press app > Protect App)
-* Enforces DNS-over-HTTPS using Quad9 or NextDNS via DNS Override app
-* Uses ProtonVPN for full-device encrypted network traffic
-* Manual DNS Proxy profiles cannot be installed without MDM — DNS Override app recommended
-* Leverages iOS built-in security features like Screen Time and App Tracking Transparency
+- `defender_hardening.ps1`: Enforces Windows Defender rules and disables legacy features.
+- `norton_compatible_hardening.ps1`: Alternative for systems using Norton or other AVs.
+- `create_restore_point.ps1`: Creates a restore point for rollback safety.
 
----
+### Phase 2 (Advanced Integrity & Credential Isolation)
 
-## Network & DNS Hardening
+- `anti_persistence.ps1`: Removes registry-based and WSH startup persistence.
+- `logging_setup.ps1`: Enables script and module auditing for PowerShell.
+- `bitlocker_aes256_pin.ps1`: Applies full disk encryption with AES-256 and preboot PIN.
+- `registry_hardening.ps1`: Locks down key registry paths and disables weak behaviors.
 
-### Recommended DNS Providers
-
-* **Quad9** — Blocks known malware and phishing domains with a strong privacy policy
-* **NextDNS** — Highly customizable, with enhanced tracking and malware filtering
-
-### DNS Setup on Devices
-
-* **Windows 11** — Configure Quad9 or NextDNS IPs and enable DNS-over-HTTPS via system settings or PowerShell
-* **iOS 18.5** — Use DNS Override app to enforce Quad9/NextDNS for Wi-Fi and cellular globally
-* **VPN** — Use ProtonVPN Duo subscription for full-device encrypted traffic and IP masking
+📄 See [Phase 2 Documentation](docs/Phase2.md) for technical controls and threat model.
 
 ---
 
-## ProtonVPN vs Apple Private Relay
+## 📱 iOS 18.5 Security & Privacy
+
+- App-level Face ID protection (via “Protect App” long-press setting).
+- Enforces DNS-over-HTTPS using DNS Override (NextDNS or Quad9).
+- ProtonVPN for full-device encrypted traffic.
+- Screen Time, microphone/camera lockdown, and App Tracking Transparency.
+
+---
+
+## 🌐 Network & DNS Monitoring
+
+Scripts inside `monitoring/` track critical resolution and root trust changes:
+
+- `check_root_certs.ps1`: Compares trusted root CA list against baseline.
+- `check_dns_integrity.ps1`: Ensures DNS resolves correctly across providers.
+- `check_dnssec.ps1`: Audits DNSSEC trust path from providers like Quad9.
+
+### ⏲ Scheduled Task Profiles
+
+XML files in `monitoring/tasks` automate weekly execution of above scripts at 3:00am.
+
+---
+
+## 🔍 ProtonVPN vs Apple Private Relay
 
 | Feature               | Apple Private Relay               | ProtonVPN                         |
-| --------------------- | --------------------------------- | --------------------------------- |
-| Scope                 | Safari/web traffic only           | Full device traffic encryption    |
-| Privacy               | Obscures IP from websites & Apple | Masks IP from ISP & network       |
-| Speed                 | Very fast                         | Fast, depends on server load      |
-| Configuration         | Minimal, automatic                | Full control (servers, protocols) |
-| Compatibility         | iOS/macOS only                    | Multi-platform                    |
-| Subscription Required | iCloud+                           | ProtonVPN subscription            |
+|----------------------|-----------------------------------|----------------------------------|
+| Scope                | Safari/web traffic only           | Full device traffic encryption   |
+| Privacy              | Obscures IP from websites/Apple   | Masks IP from ISP & local network |
+| Platform Support     | iOS/macOS only                    | Cross-platform                   |
+| Speed/Performance    | Excellent                         | High (depends on server)         |
+| Control              | Minimal (automatic)               | Full configuration control       |
 
-**Recommendation:** Use ProtonVPN as primary VPN for full-device protection. Disable Apple Private Relay when ProtonVPN is active (they cannot run simultaneously).
-
----
-
-## Checklist Summaries
-
-### Windows 11 Enterprise Checklist
-
-* [x] Create system restore point
-* [x] Disable SMBv1 and Remote Desktop if unused
-* [x] Enable SmartScreen via registry or Defender settings
-* [x] Harden exploit protection (DEP, SEHOP, CFG, etc.)
-* [x] Disable telemetry (set AllowTelemetry=0)
-* [x] Configure DNS to Quad9 or NextDNS (DoH enabled)
-* [x] Use ProtonVPN for encrypted network traffic
-* [x] Regularly update OS and security software
-* [x] Apply Phase 2 scripts for credential and script auditing hardening
-* [x] Optionally use Norton-compatible hardening if Norton AV installed
+✔️ **Use ProtonVPN for complete security.** Disable Private Relay when active.
 
 ---
 
-### iOS 18.5 Checklist
+## ✅ Checklists
 
-* [x] Enable Face ID/Touch ID with app-level protection (long-press app > Protect App)
-* [x] Use DNS Override app to enforce Quad9 or NextDNS globally
-* [x] Use ProtonVPN for full-device VPN encryption
-* [x] Disable Auto-Join on untrusted Wi-Fi
-* [x] Disable location, microphone, camera access for unnecessary apps
-* [x] Enable Screen Time restrictions and App Tracking Transparency
-* [x] Keep iOS and apps up to date
-* [x] Use strong passwords and 2FA on Apple ID and apps
+### Windows 11 Enterprise
 
----
+- [x] System restore point created
+- [x] Legacy protocols disabled (SMBv1, RDP)
+- [x] SmartScreen, DEP, and SEHOP enforced
+- [x] Defender or Norton hardening applied
+- [x] DNS-over-HTTPS to Quad9 or NextDNS
+- [x] Logging and script auditing enabled
+- [x] Credential Guard and VBS confirmed
+- [x] USB and autorun lockdown
+- [x] Root cert and DNS integrity monitoring
+- [x] BitLocker (AES-256 with PIN) planned
 
-## Usage & Installation
+### iOS 18.5
 
-1. Download or clone the project from GitHub.
-2. Run `phase1/create_restore_point.ps1` before making any changes.
-3. Apply Phase 1 scripts depending on Defender/Norton usage.
-4. Run Phase 2 scripts for enhanced security logging and credential isolation.
-5. On iOS, install DNS Override and ProtonVPN from the App Store.
-6. Refer to checklist and maintain regular updates and backups.
-
----
-
-## License
-
-MIT License — Free to use, modify, and share. Please attribute original work to Collin Blaine George.
+- [x] App Face ID lock enabled
+- [x] DNS Override profile configured
+- [x] ProtonVPN active for VPN routing
+- [x] Untrusted Wi-Fi auto-join disabled
+- [x] Camera/microphone/privacy settings locked down
+- [x] Screen Time, updates, and 2FA enabled
 
 ---
 
-## Contact
+## 🚀 Usage & Installation
 
-For questions or collaboration, reach out via GitHub issues or email.
+```powershell
+# From PowerShell on Windows:
+cd Downloads\Cyberimmune_Bundle_v2
+powershell -ExecutionPolicy Bypass -File .\phase1\create_restore_point.ps1
+powershell -ExecutionPolicy Bypass -File .\phase1\defender_hardening.ps1
+powershell -ExecutionPolicy Bypass -File .\phase2 nti_persistence.ps1
+powershell -ExecutionPolicy Bypass -File .\phase2\logging_setup.ps1
+powershell -ExecutionPolicy Bypass -File .\monitoring\check_root_certs.ps1
+```
+
+On iOS, install **DNS Override** and **ProtonVPN** from App Store.
 
 ---
 
-# Thank you for securing your digital life with Cyberimmune!
+## ⚖️ License
+
+MIT — Free to use, modify, and distribute. Please attribute original work to **Collin Blaine George**.
 
 ---
+
+## 🧠 Contact
+
+For collaboration, feedback, or contributions, open a GitHub issue or contact via GitHub profile.
+
+---
+
+🔒 **Thank you for helping secure the digital future — one system at a time.**
