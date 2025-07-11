@@ -1,7 +1,41 @@
-
 # 🛡 CYBERIMMUNE: Comprehensive Device Hardening & Privacy Framework
 
 A personal cybersecurity hardening project designed to build a “digital immune system” for your devices — focused on Windows 11 Enterprise and iOS 18.5. This project integrates system lockdown scripts, DNS & certificate monitoring, zero trust controls, and privacy enhancements across endpoints.
+
+---
+
+## 🔐 Security Posture Summary
+
+> **Security Level:** This system achieves an **advanced Zero Trust architecture**, comparable to **enterprise blue team standards** — integrating endpoint hardening, network controls, and quantum-safe TLS. It aligns with **NIST SP 800-53**, **NSA Windows hardening guidance**, and post-quantum cryptographic readiness.
+
+### ✅ Achievements:
+- Credential Guard + Virtualization-Based Security (VBS)
+- BitLocker with AES-256 + PIN (pending finalization)
+- PowerShell & ScriptBlock auditing
+- Removal of persistence vectors
+- Registry lockdown and secure DNS enforcement
+- TLS 1.2/1.3 enforcement with quantum-safe cipher suites
+- Root certificate & DNSSEC integrity monitoring
+- Scheduled validation tasks
+
+### 🧩 Related Projects
+
+| Project | Description | Link |
+|--------|-------------|------|
+| **QuantumReadiness** | Enables TLS 1.2/1.3, removes legacy protocols, enforces strong cipher suites and quantum-safe crypto | [🔗 GitHub Repo](https://github.com/collingeorge/QUANTUMREADINESS) |
+| **Set-NTPConfig** | Configures secure and accurate NTP sync for time integrity (critical for cryptographic verification) | [🔗 GitHub Repo](https://github.com/collingeorge/Set-NTPConfig) |
+
+### 🔗 Key Script Links
+
+| Script | Purpose | Link |
+|--------|---------|------|
+| `phase1/defender_hardening.ps1` | Lock down Defender, remove attack surface | [View](https://github.com/collingeorge/CYBERIMMUNITY/blob/main/phase1/defender_hardening.ps1) |
+| `phase1/norton_compatible_hardening.ps1` | AV-compatible version for Norton or 3rd party | [View](https://github.com/collingeorge/CYBERIMMUNITY/blob/main/phase1/norton_compatible_hardening.ps1) |
+| `phase2/anti_persistence.ps1` | Removes persistence vectors from registry | [View](https://github.com/collingeorge/CYBERIMMUNITY/blob/main/phase2/anti_persistence.ps1) |
+| `phase2/logging_setup.ps1` | Enables full PowerShell and script logging | [View](https://github.com/collingeorge/CYBERIMMUNITY/blob/main/phase2/logging_setup.ps1) |
+| `phase2/registry_hardening.ps1` | Locks down insecure registry keys | [View](https://github.com/collingeorge/CYBERIMMUNITY/blob/main/phase2/registry_hardening.ps1) |
+| `quantum_tls_hardening.ps1` | Disables SSL, enforces TLS 1.2/1.3, adds secure cipher suites | [View](https://github.com/collingeorge/QUANTUMREADINESS/blob/main/tls_hardening.ps1) |
+| `set_ntp_config.ps1` | Configures secure time sync with trusted NTP servers | [View](https://github.com/collingeorge/Set-NTPConfig/blob/main/Set-NTPConfig.ps1) |
 
 ---
 
@@ -33,10 +67,6 @@ CYBERIMMUNITY/
 │       ├── DNS_Resolution_Check.xml
 │       └── RootCertIntegrityMonitor.xml
 ```
-
----
-
-## 🔐 Windows 11 Enterprise Hardening
 
 ### Phase 1 (Baseline Hardening)
 
@@ -125,8 +155,12 @@ XML files in `monitoring/tasks` automate weekly execution of above scripts at 3:
 cd Downloads\Cyberimmune_Bundle_v2
 powershell -ExecutionPolicy Bypass -File .\phase1\create_restore_point.ps1
 powershell -ExecutionPolicy Bypass -File .\phase1\defender_hardening.ps1
-powershell -ExecutionPolicy Bypass -File .\phase2 nti_persistence.ps1
-powershell -ExecutionPolicy Bypass -File .\phase2\logging_setup.ps1
+powershell -ExecutionPolicy Bypass -File .\phase2 anti_persistence.ps1
+powershell -ExecutionPolicy Bypass -File .\phase2\bitlocker_aes256_pin.ps1
+powershell -ExecutionPolicy Bypass -File .\phase1\logging_setup.ps1
+powershell -ExecutionPolicy Bypass -File .\registry_hardening.ps1
+powershell -ExecutionPolicy Bypass -File .\check_dns_integrity.ps1
+powershell -ExecutionPolicy Bypass -File .\check_dnssec.ps1
 powershell -ExecutionPolicy Bypass -File .\monitoring\check_root_certs.ps1
 ```
 
