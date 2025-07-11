@@ -48,7 +48,7 @@ CYBERIMMUNITY/
 ├── docs/
 │   ├── Phase1.md
 │   ├── Phase2.md
-│   └── Whitepaper_Draft.md  # (Coming soon)
+│   └── Cyberimmune_Whitepaper.md
 ├── phase1/
 │   ├── create_restore_point.ps1
 │   ├── defender_hardening.ps1
@@ -74,6 +74,8 @@ CYBERIMMUNITY/
 - `norton_compatible_hardening.ps1`: Alternative for systems using Norton or other AVs.
 - `create_restore_point.ps1`: Creates a restore point for rollback safety.
 
+📄 See [Phase 1 Documentation](docs/Phase1.md) for technical controls and threat model.
+
 ### Phase 2 (Advanced Integrity & Credential Isolation)
 
 - `anti_persistence.ps1`: Removes registry-based and WSH startup persistence.
@@ -82,6 +84,15 @@ CYBERIMMUNITY/
 - `registry_hardening.ps1`: Locks down key registry paths and disables weak behaviors.
 
 📄 See [Phase 2 Documentation](docs/Phase2.md) for technical controls and threat model.
+
+---
+### 🛡️ Cyberimmune Whitepaper: Zero Trust Security Blueprint
+
+#### Abstract
+
+This whitepaper presents the Cyberimmune project: a comprehensive, layered cybersecurity framework designed to implement a practical and user-driven Zero Trust model on consumer and professional endpoints. Focused on Windows 11 Enterprise and iOS 18.5, the system uses scriptable hardening, forensic-grade logging, strict access controls, DNS monitoring, and privacy tools to create a “digital immune system” capable of resisting modern cyber threats.
+
+See [Cyberimmune Whitepaper: Zero Trust Security Blueprint](docs/Cyberimmune_Whitepaper.md) for technical controls and threat model.
 
 ---
 
