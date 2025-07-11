@@ -37,7 +37,7 @@ This project consolidates best practices, scripts, and configuration profiles to
 * `phase2/logging_setup.ps1` — Enables PowerShell Module and ScriptBlock logging
 * `phase2/bitlocker_aes256_pin.ps1` — Enables AES-256 BitLocker with preboot PIN (coming)
 
-📄 [Read Phase 2 Documentation](docs/Phase%202.md)
+📄 [Read Phase 2 Documentation](docs/Phase2.md)
 
 ### Run the Scripts with PowerShell
 
