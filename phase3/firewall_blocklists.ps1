@@ -31,7 +31,6 @@ $blocklists = @(
     "https://iplists.firehol.org/files/alienvault_reputation.ipset",
     "https://iplists.firehol.org/files/dshield.netset",
     "https://iplists.firehol.org/files/dm_tor.ipset",
-    "https://iplists.firehol.org/files/voipbl.netset",
     "https://iplists.firehol.org/files/geolite2_country/anonymous.netset",
     "https://iplists.firehol.org/files/geolite2_country/continent_af.netset",
     "https://iplists.firehol.org/files/geolite2_country/country_af.netset",
@@ -112,3 +111,4 @@ if ($batch.Count -gt 0) {
 }
 
 Write-Host "`n✅ Firewall rules successfully applied under group: $ruleGroup" -ForegroundColor Green
+
